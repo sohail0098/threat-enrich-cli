@@ -59,9 +59,9 @@ def main():
     if not iocs:
         help_message = """❌ No IOCs provided. Use --input or --file.
     Usage:
-    --input <IOC>          Single IOC to check (e.g., IP, domain)
+    --input <IOC>          Single IOC to check (e.g., IP, domain, hash)
     --file <file_path>     File containing list of IOCs
-    --sources <sources>    Sources to query (default: abuseipdb otx)
+    --sources <sources>    Sources to query (default: abuseipdb otx virustotal)
     --output <file_path>   Output file (JSON format)
     --summary              Show aggregated summary per IOC
     --cache <file_path>    Cache file path (default: cache.json)"""

@@ -1,4 +1,5 @@
 .venv
 *.log
 *.json
+config.yml
 __pycache__/

@@ -111,7 +111,7 @@ def main():
         updated_cache = True
 
     if updated_cache:
-        save_cache(cache)
+        save_cache(cache, cache_file)
 
     # Output handling
     print_table(results)

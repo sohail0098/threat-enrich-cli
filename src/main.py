@@ -2,6 +2,7 @@ import argparse
 import yaml
 import json
 import os
+import sys
 from datetime import datetime, timezone
 from enrichers.abuseipdb import enrich_abuseipdb
 from enrichers.otx import enrich_otx
@@ -18,6 +19,11 @@ from rich.console import Console
 
 console = Console()
 
+def get_config_path():
+    if getattr(sys, 'frozen', False):
+        return os.path.join(sys._MEIPASS, "config.yml")
+    return "config.yml"
+
 def main():
     parser = argparse.ArgumentParser(description="Threat Intelligence Enrichment CLI Tool")
     parser.add_argument("--input", help="Single IOC to check (e.g., IP, domain)")
@@ -30,14 +36,23 @@ def main():
     )
     parser.add_argument("--output", help="Output file (JSON format)", default=None)
     parser.add_argument("--summary", action="store_true", help="Show aggregated summary per IOC")
-    parser.add_argument("--cache", help="Cache file path", default="cache.json")
+    
+    # Set default cache path to ~/.threat-enrich/cache.json
+    home_dir = os.path.expanduser("~")
+    app_dir = os.path.join(home_dir, ".threat-enrich")
+    if not os.path.exists(app_dir):
+        os.makedirs(app_dir)
+    default_cache_path = os.path.join(app_dir, "cache.json")
+    
+    parser.add_argument("--cache", help=f"Cache file path (default: {default_cache_path})", default=default_cache_path)
     args = parser.parse_args()
 
     # Load config
-    if not os.path.exists("config.yml"):
-        console.print("[red]❌ config.yml not found! Please create the config file with API keys.[/red]")
+    config_path = get_config_path()
+    if not os.path.exists(config_path):
+        console.print(f"[red]❌ {config_path} not found! Please create the config file with API keys.[/red]")
         return
-    with open("config.yml", "r") as f:
+    with open(config_path, "r") as f:
         config = yaml.safe_load(f)
     abuseipdb_key = config.get("abuseipdb_api_key")
     otx_key = config.get("otx_api_key")

@@ -17,6 +17,7 @@ def enrich_virustotal(ioc, api_key):
             positives = stats.get("malicious", 0)
             score = round((positives / total) * 100, 2)
             category = data.get("categories") or data.get("meaningful_name", "-")
+            tags = data.get("tags", [])
 
             return {
                 "ioc": ioc,
@@ -25,6 +26,7 @@ def enrich_virustotal(ioc, api_key):
                 "total_engines": total,
                 "score_percent": score,
                 "category": str(category)[:60],
+                "tags": ", ".join(tags) if tags else "-",
             }
         else:
             return {

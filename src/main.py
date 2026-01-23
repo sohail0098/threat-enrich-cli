@@ -1,4 +1,6 @@
 import argparse
+import warnings
+warnings.filterwarnings("ignore")
 import yaml
 import json
 import os
@@ -49,6 +51,13 @@ def main():
 
     # Load config
     config_path = get_config_path()
+    try:
+        if os.path.isfile(os.path.join(os.path.dirname(os.path.dirname(__file__)), config_path )):
+            config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), config_path )
+        elif os.path.isfile(os.path.join(os.path.dirname(__file__), config_path )):
+            config_path = os.path.join(os.path.dirname(__file__), config_path )
+    except NameError:
+        pass
     if not os.path.exists(config_path):
         console.print(f"[red]❌ {config_path} not found! Please create the config file with API keys.[/red]")
         return
